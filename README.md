@@ -54,6 +54,56 @@ channels in parallel, fuses them with RRF, and backs every result with auditable
   **Private by default**: private memories are encrypted at rest; the service binds only to
   loopback — no cloud, no telemetry, no accounts.
 
+## 核心特性 / Signature Features
+
+### 记忆闪回 · Memory Flashback —— 让记忆"回放"，而不只是"命中"
+
+普通检索只告诉你"找到了什么"；MEMCORE 能告诉你"它是怎么一步步发生的"。
+属于同一事件链的记忆被串成一条三维光管，点击「进入闪回」，光珠沿路径逐节点流动，
+按时间顺序重现整条脉络——前因后果、来龙去脉，一次看清。
+
+Ordinary search tells you *what* was found; MEMCORE shows *how it unfolded*. Memories in the
+same event chain are linked into a 3D light tube. Enter flashback and a light bead travels node
+by node, replaying the full sequence in chronological order — cause and effect at a glance.
+
+### 连续记忆 · Continuous Memory —— 越用越懂，而不是每次从零开始
+
+- 离线巩固自动把零散记录聚类成事件，再按时间分层，形成可累积的长期记忆。
+  Offline consolidation clusters scattered records into events and layers them over time,
+  building cumulative long-term memory.
+- 画像随新记忆持续更新，上下文连贯，跨会话不丢失主线。
+  The profile keeps evolving with new memories, preserving context and continuity across
+  sessions.
+- 去重与单事务写入保证记忆不重复、不残缺，库随时间自然生长。
+  Deduplication and single-transaction writes keep the store free of duplicates and partial
+  state, growing cleanly over time.
+
+### 三维记忆晶格 · 3D Memory Lattice —— 多方向的星图，不是平面列表
+
+记忆在三维空间中多方向分布，颜色随时间渐变、亮度代表权重，整体随记忆量扩张；
+可旋转、可缩放、可点击，输入一句话相关记忆即刻点亮。
+
+Memories are distributed across all three dimensions — color encodes time, brightness encodes
+weight, and the whole lattice expands as it grows. Rotate, zoom, click; type a sentence and the
+relevant stars light up.
+
+### 多路召回 · Multi-Path Recall —— 每条结论都可核对
+
+多条独立路径并行召回，RRF 融合收敛到 Top-K；节点检查器给出正文、置信度、命中理由与
+完整元信息，结论可溯源、可复算，而不是一个无法解释的黑盒分数。
+
+Independent channels run in parallel and are fused via RRF into a Top-K. The node inspector
+shows text, confidence, reasons and full metadata — traceable and recomputable, never an opaque
+score.
+
+### 私密记忆 · Private Memory —— 你的记忆，只属于你
+
+私密记忆正文经本地密钥加密落盘，设置口令后未解锁即不返回、不展示；服务只绑定回环地址，
+无云端、无遥测、无账号。
+
+Private text is encrypted with a local key and stays hidden until unlocked with a password. The
+server binds only to loopback — no cloud, no telemetry, no accounts.
+
 ## 快速开始 / Quick Start
 
 需要 Python 3.10+ / Requires Python 3.10+.
@@ -162,6 +212,11 @@ recomputable results. The desktop layer adds FastAPI and a locally bundled three
 CDN or network dependency. Private memories are encrypted at rest using a local key and can be
 protected by a password; the server binds only to the loopback interface, with no telemetry,
 accounts or reporting.
+
+**Memory flashback** goes beyond matching: memories in the same event chain are linked into a 3D
+light tube and replayed node by node, reconstructing how an event unfolded rather than merely
+returning a hit. **Continuous memory** is maintained by offline consolidation that clusters
+records into events and layers them over time, keeping context and a live profile across sessions.
 
 See the sections above for bilingual quick-start, architecture and privacy details.
 
