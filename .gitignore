@@ -1,0 +1,24 @@
+# 本地数据与密钥 / Local data & keys
+data/
+*.db
+*.db-wal
+*.db-shm
+.memkey
+.vault
+
+# Python 缓存 / Python caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# 虚拟环境 / Virtual environments
+.venv/
+venv/
+env/
+
+# 编辑器与系统文件 / Editor & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

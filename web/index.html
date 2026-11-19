@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>MEMCORE C0 — 4D Memory Lattice</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div class="vignette"></div>
+<div class="hud" id="hud">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="orb"></span>
+      <div>
+        <div class="brand-name">MEMCORE <span>C0</span></div>
+        <div class="brand-sub">4D MEMORY LATTICE</div>
+      </div>
+    </div>
+
+    <form class="search" id="searchForm">
+      <span class="search-icon">⌕</span>
+      <input id="searchInput" autocomplete="off" spellcheck="false"
+             placeholder="输入一句话，让记忆在网格里亮起来…">
+      <button type="submit">RECALL</button>
+    </form>
+
+    <div class="top-actions">
+      <button class="hud-btn" id="viewBtn">LATTICE</button>
+      <button class="hud-btn" id="themeBtn">THEME</button>
+      <button class="hud-btn" id="focusBtn">FOCUS</button>
+    </div>
+  </header>
+
+  <aside class="left-rail panel">
+    <div class="panel-kicker">FIELDS / 维度</div>
+
+    <div class="filter-block">
+      <div class="filter-head"><span>MEMORY SCOPE</span><b id="scopeCount">—</b></div>
+      <select id="scopeSelect" class="scope-select"></select>
+    </div>
+
+    <div class="filter-block">
+      <div class="filter-head"><span>TIME WINDOW</span><b id="timeLabel">ALL</b></div>
+      <input type="range" id="timeRange" min="0" max="100" value="100">
+      <div class="range-ends"><span>PAST</span><span>NOW</span></div>
+    </div>
+
+    <div class="filter-block">
+      <div class="filter-head"><span>CONFIDENCE</span><b id="confLabel">ALL</b></div>
+      <div class="seg" id="confSeg">
+        <button data-conf="all" class="on">ALL</button>
+        <button data-conf="high">HIGH</button>
+        <button data-conf="med">MED</button>
+      </div>
+    </div>
+
+    <div class="filter-block">
+      <div class="filter-head"><span>COMPOSITION</span><b id="layerLabel">ALL</b></div>
+      <div class="seg layers" id="layerSeg">
+        <button data-layer="all" class="on">ALL</button>
+        <button data-layer="0">0</button>
+        <button data-layer="1">1</button>
+        <button data-layer="2">2</button>
+        <button data-layer="3">3</button>
+        <button data-layer="4">4</button>
+      </div>
+    </div>
+
+    <div class="filter-block">
+      <label class="toggle">
+        <input type="checkbox" id="privateToggle" checked>
+        <span></span>
+        <em>SHOW PRIVATE</em>
+      </label>
+    </div>
+
+    <div class="filter-block history-block">
+      <div class="filter-head"><span>RECENT QUERIES</span><b id="historyClear">CLEAR</b></div>
+      <div class="history" id="historyList"></div>
+    </div>
+  </aside>
+
+  <div class="axis-legend panel">
+    <div class="panel-kicker">AXES / 坐标</div>
+    <div class="legend-row"><i class="lx"></i><span>X / 情境 384</span></div>
+    <div class="legend-row"><i class="ly"></i><span>Y / 构成 5</span></div>
+    <div class="legend-row"><i class="lz"></i><span>Z / 中心-距离</span></div>
+    <div class="legend-row time"><i></i><span>TIME / 时间</span></div>
+  </div>
+
+  <div class="timeline panel">
+    <div class="timeline-head">
+      <span>TIME RAIL</span>
+      <b id="timelineLabel">ALL MEMORIES</b>
+    </div>
+    <input type="range" id="timelineRange" min="0" max="100" value="100">
+    <div class="timeline-meta">
+      <span id="timelineMin">—</span>
+      <span id="timelineMax">—</span>
+    </div>
+  </div>
+
+  <div class="stats panel">
+    <div class="stat"><b id="statNodes">—</b><span>NODES</span></div>
+    <div class="stat"><b id="statHits">—</b><span>HITS</span></div>
+    <div class="stat"><b id="statFps">—</b><span>FPS</span></div>
+  </div>
+
+  <aside class="inspector panel" id="inspector">
+    <div class="inspector-head">
+      <div>
+        <div class="panel-kicker">MEMORY / 节点</div>
+        <div class="inspector-conf" id="insConf">—</div>
+      </div>
+      <button class="icon-btn" id="insClose">✕</button>
+    </div>
+    <div class="inspector-time" id="insTime">—</div>
+    <blockquote id="insText">选择网格里的一个节点。</blockquote>
+    <div class="inspector-why" id="insWhy"></div>
+    <div class="inspector-tags" id="insTags"></div>
+    <div class="ins-meta" id="insMeta"></div>
+    <div class="ins-explain">
+      <div class="panel-kicker">WHY THIS MEMORY</div>
+      <ul id="insWhyList"></ul>
+    </div>
+    <div class="inspector-actions">
+      <button id="insFlash">进入闪回 →</button>
+      <button data-action="correct">这条像</button>
+      <button data-action="pin">置顶</button>
+      <button data-action="forget">忘记</button>
+      <button data-action="quiet">安静模式</button>
+    </div>
+    <div class="inspector-safe"><span class="live"><i></i> SAFETY GATE</span><span>隐私 / 创伤 / scope</span></div>
+  </aside>
+
+  <div class="theme-panel panel" id="themePanel">
+    <div class="panel-kicker">THEME / 颜色</div>
+    <div class="preset-grid" id="presetGrid"></div>
+    <div class="color-row">
+      <label>ACCENT <input type="color" id="accentColor" value="#35e6ff"></label>
+      <label>SECOND <input type="color" id="secondColor" value="#9b6cff"></label>
+    </div>
+    <div class="slider-row">
+      <label>GLOW <input type="range" id="glowRange" min="0" max="100" value="65"></label>
+      <label>GRID <input type="range" id="gridRange" min="0" max="100" value="30"></label>
+      <label>NODE <input type="range" id="nodeRange" min="40" max="180" value="100"></label>
+      <label>MOTION <input type="range" id="motionRange" min="0" max="100" value="55"></label>
+    </div>
+    <div class="theme-actions">
+      <button id="themeReset">RESET</button>
+      <button id="themeClose">CLOSE</button>
+    </div>
+  </div>
+
+  <div class="flash-drawer panel" id="flashDrawer">
+    <div class="flash-head">
+      <div>
+        <div class="panel-kicker">MEMORY FLASHBACK</div>
+        <div class="flash-mode" id="flashMode">EVENT / 事件链</div>
+      </div>
+      <div class="flash-actions">
+        <button id="flashReplay">REPLAY</button>
+        <button id="flashExit">EXIT</button>
+      </div>
+    </div>
+    <div class="flash-nodes" id="flashNodes"></div>
+    <div class="flash-note" id="flashNote"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div class="loading" id="loading">
+    <div class="loading-core"></div>
+    <div class="loading-text">CALIBRATING MEMORY LATTICE</div>
+    <div class="loading-bar"><span></span></div>
+  </div>
+</div>
+
+<script src="/vendor/three.min.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>
